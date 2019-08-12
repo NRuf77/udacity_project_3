@@ -39,9 +39,37 @@ The following additional programs have been installed using apt-get:
 - apache2
 - libapache2-mod-wsgi
 - python-pip
+- unattended-updates
 
 Note: git was already installed on the Ubuntu server; a PostgreSQL database has
-not been installed as the item catalog was built using sqlite3. 
+not been installed as the item catalog was built using sqlite3.
+
+To configure automatic security updates with unattended-updates, additional
+steps are necessary:
+- Run
+
+  > sudo nano /etc/apt/apt.conf.d/50unattended-upgrades
+
+  and comment out all allowed-origins with // except for
+  
+  > -"${distro_id}:${distro_codename}-security";
+- Run
+
+  > sudo nano /etc/apt/apt.conf.d/20auto-upgrades
+  
+  and ensure there are three lines
+  
+  >  APT::Periodic::Update-Package-Lists "1";
+  
+  > APT::Periodic::Unattended-Upgrade "1";
+  
+  > APT::Periodic::Download-Upgradeable-Packages "1";
+
+- Restart the server using
+
+  > sudo reboot
+  
+  or the Amazon lightsail controls. 
 
 
 ### Python packages
@@ -113,3 +141,40 @@ The following Python packages have been installed using pip install:
 
   These ensure that the working directory for the app is /var/www/html and that
   the server starts serving the app from start_app.wsgi.
+
+
+## Helpful resources
+Apart from the course material, these sites helped me to solve some technical
+issues:
+
+- Configuration options for securing the SSH connection
+
+  https://www.ssh.com/ssh/sshd_config/
+  
+- UFW firewall configuration
+
+  https://www.configserverfirewall.com/ufw-ubuntu-firewall/ubuntu-firewall-open-port/
+
+- Enabling automatic security updates for Ubuntu and making the message of the
+  day show the correct number of missing updates
+
+  https://help.ubuntu.com/lts/serverguide/automatic-updates.html
+  
+  https://websiteforstudents.com/setup-automatic-security-updates-on-ubuntu-18-04-lts-beta-server/
+  
+  https://serverfault.com/questions/262751/update-ubuntu-10-04/262773#262773
+
+- Setting up the Flask app to run with Apache WSGI from the right home
+  directory
+
+  https://www.bogotobogo.com/python/Flask/Python_Flask_HelloWorld_App_with_Apache_WSGI_Ubuntu14.php
+  
+  https://modwsgi.readthedocs.io/en/develop/configuration-directives/WSGIDaemonProcess.html
+
+- Using xip.io for turning a static IP into a proper URL for testing Google
+  Oauth2
+
+  https://stackoverflow.com/questions/36020374/google-permission-denied-to-generate-login-hint-for-target-domain-not-on-localh
+  
+  [Getting a domain name either costs money or requires me to sign up with some
+  dodgy-looking website so I will not do it for this project.]
